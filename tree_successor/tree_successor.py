@@ -9,6 +9,7 @@ class Node:
         self.right = right
         self.parent = parent
 
+
 class Tree:
     """A simple binary search tree"""
 
@@ -42,5 +43,28 @@ class Tree:
         Return None if there is no such node.
         If the argument is None, return the node with the smallest key.
         """
-        # TODO: Implement
-        raise NotImplementedError
+
+        # Check if the given node is null. If yes, traverse the tree by leftmost path to get the minimal node
+        if node is None:
+            current = self.root
+            while current.left is not None:
+                current = current.left
+            return current
+
+        # As the given node is not null we want to find its successor. Firstly check for the right son - higher node.
+        # If there exists such node we take the leftmost path from him and in the end we have a successor
+        # In case there is no right son, we go through parents until we find a first parent with higher key. Otherwise,
+        # no higher value exists so we return null
+        current = node
+        if current.right is not None:
+            current = current.right
+            while current.left is not None:
+                current = current.left
+            return current
+        else:
+            while current.parent is not None:
+                current = current.parent
+                if current.key > node.key:
+                    return current
+        return None
+
