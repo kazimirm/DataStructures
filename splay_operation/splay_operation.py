@@ -77,6 +77,7 @@ class Tree:
                 if node.right is None:
                     node.right = Node(key, parent=node)
                 node = node.right
+        self.splay()
 
     def remove(self, key):
         """Remove given key from the tree.
@@ -114,5 +115,30 @@ class Tree:
         If a single rotation needs to be performed, perform it as the last rotation
         (i.e., to move the splayed node to the root of the tree).
         """
-        # TODO: Implement
-        raise NotImplementedError
+        # While the desired node is not in the root, we perform the suitable splay steps
+        while node.parent is not None:
+            current = node
+            # check if parent and grandparent exist
+            cp_not_null = current.parent is not None
+            cpp_not_null = current.parent.parent is not None
+            cp_and_cpp_not_null = cp_not_null and cpp_not_null
+            # LL & PP suitable
+            ll = cp_and_cpp_not_null and current.parent.left == current and current.parent.parent.left == current.parent
+            pp = cp_and_cpp_not_null and current.parent.right == current and current.parent.parent.right == current.parent
+            # LP and PL suitable
+            lp = cp_and_cpp_not_null and current.parent.right == current and current.parent.parent.left == current.parent
+            pl = cp_and_cpp_not_null and current.parent.left == current and current.parent.parent.right == current.parent
+            # L and P suitable
+            l = cp_not_null and current.parent.left == current and current.parent.parent is None
+            p = cp_not_null and current.parent.right == current and current.parent.parent is None
+
+            if ll or pp:
+                self.rotate(current.parent)
+                self.rotate(current)
+            elif lp or pl:
+                self.rotate(current)
+                self.rotate(current)
+            elif l or p:
+                self.rotate(current)
+
+
