@@ -46,15 +46,18 @@ class Tree:
 
         Returns the node with the requested key or `None`.
         """
-        # TODO: Utilize splay suitably.
         node = self.root
+        last = node
         while node is not None:
+            last = node
             if node.key == key:
+                self.splay(node)
                 return node
             if key < node.key:
                 node = node.left
             else:
                 node = node.right
+        self.splay(last)
         return None
 
     def insert(self, key):
@@ -62,7 +65,6 @@ class Tree:
 
         If the key is already present, nothing happens.
         """
-        # TODO: Utilize splay suitably.
         if self.root is None:
             self.root = Node(key)
             return
@@ -77,7 +79,7 @@ class Tree:
                 if node.right is None:
                     node.right = Node(key, parent=node)
                 node = node.right
-        self.splay()
+        self.splay(node)
 
     def remove(self, key):
         """Remove given key from the tree.
@@ -86,7 +88,9 @@ class Tree:
         """
         # TODO: Utilize splay suitably.
         node = self.root
+        last = node
         while node is not None and node.key != key:
+            last = node
             if key < node.key:
                 node = node.left
             else:
@@ -108,6 +112,9 @@ class Tree:
                 self.root = replacement
             if replacement is not None:
                 replacement.parent = node.parent
+            self.splay(node.parent)
+        else:
+            self.splay(last)
 
     def splay(self, node):
         """Splay the given node.
@@ -116,6 +123,8 @@ class Tree:
         (i.e., to move the splayed node to the root of the tree).
         """
         # While the desired node is not in the root, we perform the suitable splay steps
+        if node is None:
+            return
         while node.parent is not None:
             current = node
             # check if parent and grandparent exist
