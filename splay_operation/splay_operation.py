@@ -45,6 +45,8 @@ class Tree:
         """Look up the given key in the tree.
 
         Returns the node with the requested key or `None`.
+
+        We check the lastly visited node and splay it to the root
         """
         node = self.root
         last = node
@@ -64,6 +66,8 @@ class Tree:
         """Insert key into the tree.
 
         If the key is already present, nothing happens.
+
+        After the node with a given key is inserted, we splay it to the root
         """
         if self.root is None:
             self.root = Node(key)
@@ -85,8 +89,10 @@ class Tree:
         """Remove given key from the tree.
 
         It the key is not present, nothing happens.
+
+        The implementation firstly finds the node, in case such node does not exist - we splay the lastly visited node.
+        Otherwise, we make some replacements and splay the parent of the given node
         """
-        # TODO: Utilize splay suitably.
         node = self.root
         last = node
         while node is not None and node.key != key:
@@ -141,6 +147,8 @@ class Tree:
             l = cp_not_null and current.parent.left == current and current.parent.parent is None
             p = cp_not_null and current.parent.right == current and current.parent.parent is None
 
+            # We perform the correct operation according to conditions - no need to distinguish right and left as the
+            # rotate method handles that
             if ll or pp:
                 self.rotate(current.parent)
                 self.rotate(current)
