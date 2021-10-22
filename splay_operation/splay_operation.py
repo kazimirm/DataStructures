@@ -132,30 +132,27 @@ class Tree:
         if node is None:
             return
         while node.parent is not None:
-            current = node
-            # check if parent and grandparent exist
-            cp_not_null = current.parent is not None
-            cpp_not_null = current.parent.parent is not None
-            cp_and_cpp_not_null = cp_not_null and cpp_not_null
+            # check if grandparent exists
+            npp_not_null = node.parent.parent is not None
             # LL & PP suitable
-            ll = cp_and_cpp_not_null and current.parent.left == current and current.parent.parent.left == current.parent
-            pp = cp_and_cpp_not_null and current.parent.right == current and current.parent.parent.right == current.parent
+            ll = npp_not_null and node.parent.left == node and node.parent.parent.left == node.parent
+            pp = npp_not_null and node.parent.right == node and node.parent.parent.right == node.parent
             # LP and PL suitable
-            lp = cp_and_cpp_not_null and current.parent.right == current and current.parent.parent.left == current.parent
-            pl = cp_and_cpp_not_null and current.parent.left == current and current.parent.parent.right == current.parent
+            lp = npp_not_null and node.parent.right == node and node.parent.parent.left == node.parent
+            pl = npp_not_null and node.parent.left == node and node.parent.parent.right == node.parent
             # L and P suitable
-            l = cp_not_null and current.parent.left == current and current.parent.parent is None
-            p = cp_not_null and current.parent.right == current and current.parent.parent is None
+            l = node.parent.left == node and node.parent.parent is None
+            p = node.parent.right == node and node.parent.parent is None
 
             # We perform the correct operation according to conditions - no need to distinguish right and left as the
             # rotate method handles that
             if ll or pp:
-                self.rotate(current.parent)
-                self.rotate(current)
+                self.rotate(node.parent)
+                self.rotate(node)
             elif lp or pl:
-                self.rotate(current)
-                self.rotate(current)
+                self.rotate(node)
+                self.rotate(node)
             elif l or p:
-                self.rotate(current)
+                self.rotate(node)
 
 
